@@ -20,7 +20,7 @@ Use a split-control architecture:
 | Main brush motor | Yes | Use current sensing for jam detection. |
 | Side brush motor | Yes | Simple PWM motor output. |
 | Vacuum blower | Yes | High-current load; use a properly rated MOSFET or driver and fuse. |
-| LiDAR | Yes | TP20 / LM393 output produces classic Neato LDS packets at 115200 baud. |
+| LiDAR | Yes | Runs standalone. Pin 17 / TP20 / LM393 output produces classic Neato LDS packets at 115200 baud; pin 18 / TP21 must be held at 5V. |
 | Bumper switches | Yes | Usually easy direct MCU inputs. |
 | Cliff sensors | Maybe | Reuse if outputs are easy to read; otherwise replace with simple IR or ToF sensors. |
 | Battery pack | Maybe | Reuse only if the pack and BMS are healthy and understood. |

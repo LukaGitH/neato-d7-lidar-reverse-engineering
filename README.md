@@ -1,6 +1,6 @@
 # Neato D7 LiDAR Reverse Engineering
 
-This repository documents a working tap point and decoder for the LiDAR in a Neato Botvac D7 robot vacuum.
+This repository documents a working standalone wiring, tap point, and decoder for the LiDAR in a Neato Botvac D7 robot vacuum.
 
 Neato app and cloud support is gone, which makes normal software rescue of these robots unlikely. The useful path is to reuse the hardware for an open robot vacuum platform. The D7 LiDAR is one of the most valuable parts, and this repo shows that it can be read as a standard serial scan stream.
 
@@ -8,7 +8,7 @@ Neato app and cloud support is gone, which makes normal software rescue of these
 
 ## Current Finding
 
-The D7 LiDAR scan data is available at the output of an LM393 comparator on the stationary side of the LiDAR electronics. In this setup the signal was probed at TP20 and read with a USB-UART adapter.
+The D7 LiDAR scan data is available at the output of an LM393 comparator on the stationary side of the LiDAR electronics. In this setup the signal was probed at TP20 / DATA and read with a USB-UART adapter.
 
 Confirmed serial settings:
 
@@ -31,13 +31,33 @@ Each packet contains four 1-degree samples. Packet indexes `0xA0` through `0xF9`
 
 ## Wiring
 
+Standalone wiring confirmed so far:
+
+```text
+Pin 2  = 5V logic / board power
+Pin 3  = GND
+Pin 11 = GND
+Pin 17 = TP20 / DATA
+Pin 18 = TP21, must be pulled to 5V
+Pin 20 = LDS_M+
+Pin 9  = LDS_M-
+```
+
+Notes:
+
+- TP21 must be held high at 5V for standalone operation.
+- TP21 also worked through a 4.7k resistor to 5V, so it appears to be a logic/control input rather than a heavy power rail.
+- The LiDAR board logic is 5V.
+- The LDS motor is driven around 5V to 6V depending on target RPM.
+- About 300 RPM is the normal target speed, but packets were observed at lower speeds too.
+
 Use the USB-UART adapter as a receiver only:
 
 ```text
-LM393 / TP20 data output -> USB-UART RX
-Robot / LiDAR GND       -> USB-UART GND
-USB-UART TX             -> not connected
-USB-UART VCC            -> not connected
+Pin 17 / TP20 / DATA -> USB-UART RX
+Pin 3 or 11 / GND    -> USB-UART GND
+USB-UART TX          -> not connected
+USB-UART VCC         -> not connected
 ```
 
 Do not power the LiDAR from the USB-UART adapter. Check the signal voltage before connecting it to a UART input.
@@ -93,7 +113,9 @@ Detailed notes are in:
 
 Working:
 
-- TP20 / LM393 serial tap
+- standalone LiDAR power/control wiring
+- TP20 / LM393 serial tap on pin 17
+- TP21 enable/control high on pin 18
 - 115200 8N1 decode
 - classic LDS checksum validation
 - live point-cloud viewer
@@ -101,6 +123,5 @@ Working:
 
 Not solved yet:
 
-- standalone replacement for the LiDAR motor / inductive power electronics,
 - ROS2 driver,
 - integration into a full replacement robot control stack.

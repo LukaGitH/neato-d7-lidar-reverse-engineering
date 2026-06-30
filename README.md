@@ -48,7 +48,9 @@ Notes:
 - TP21 must be held high at 5V for standalone operation.
 - TP21 also worked through a 4.7k resistor to 5V, so it appears to be a logic/control input rather than a heavy power rail.
 - The LiDAR board logic is 5V.
+- The LiDAR board logic draws about 330 mA.
 - The LDS motor is driven around 5V to 6V depending on target RPM.
+- The LDS motor draws about 25 mA at the tested operating point.
 - About 300 RPM is the normal target speed, but packets were observed at lower speeds too.
 
 Use the USB-UART adapter as a receiver only:

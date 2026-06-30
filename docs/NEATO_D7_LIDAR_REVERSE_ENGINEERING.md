@@ -57,7 +57,9 @@ Power observations:
 
 ```text
 LiDAR board logic: 5V
+LiDAR board logic current: about 330 mA
 LDS motor: around 5V to 6V, depending on target RPM
+LDS motor current: about 25 mA at the tested operating point
 Target speed: about 300 RPM
 ```
 

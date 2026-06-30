@@ -105,6 +105,14 @@ This makes the D7 LiDAR practical to reuse in an open-source robot vacuum build.
 
 The next software step is a ROS2 `sensor_msgs/msg/LaserScan` publisher that collects full rotations and publishes the D7 LiDAR as a standard 2D laser scanner.
 
+An initial ROS2 package is included in:
+
+- [ros2_ws/src/d7_lidar_ros](ros2_ws/src/d7_lidar_ros)
+
+Quickstart:
+
+- [docs/ROS2_QUICKSTART.md](docs/ROS2_QUICKSTART.md)
+
 ## Documentation
 
 Detailed notes are in:

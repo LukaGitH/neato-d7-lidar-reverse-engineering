@@ -4,7 +4,7 @@ These are working notes for decoding and using the LiDAR module from a Neato Bot
 
 ## Current status
 
-The Neato D7 LiDAR optical data output has been successfully decoded.
+The Neato D7 LiDAR optical data output has been successfully decoded and the LiDAR has been run standalone from a laptop/USB-UART setup.
 
 The useful data line is the output of an **LM393 comparator** on the stationary/main-side board. This line carries a normal serial byte stream:
 
@@ -31,6 +31,54 @@ optical link: data/status between spinning head and stationary board
 
 Important: the ~57 kHz seen on some lines is not the final LiDAR scan packet stream. The scan data is available after the optical receiver/comparator as a 115200 baud serial stream.
 
+## Standalone connector pinout
+
+Confirmed useful pins on the 20-pin connector:
+
+```text
+Pin 20 = LDS_M+
+Pin 18 = TP21
+Pin 17 = TP20 / DATA
+Pin 11 = GND
+Pin 9  = LDS_M-
+Pin 3  = GND
+Pin 2  = 5V
+```
+
+Standalone operation requires TP21 to be held high:
+
+```text
+Pin 18 / TP21 -> 5V
+```
+
+TP21 also worked when connected to 5V through a 4.7k resistor, so it appears to be a logic/control input rather than a heavy power rail.
+
+Power observations:
+
+```text
+LiDAR board logic: 5V
+LiDAR board logic current: about 330 mA
+LDS motor: around 5V to 6V, depending on target RPM
+LDS motor current: about 25 mA at the tested operating point
+Target speed: about 300 RPM
+```
+
+The LiDAR can produce packets at lower motor speeds, but about 300 RPM is the normal target speed.
+
+## Standalone wiring
+
+```text
+5V power        -> pin 2
+GND             -> pin 3 and/or pin 11
+TP21 enable     -> pin 18 pulled to 5V, direct or through 4.7k
+Motor positive  -> pin 20 / LDS_M+
+Motor negative  -> pin 9 / LDS_M-
+DATA            -> pin 17 / TP20 / DATA -> USB-UART RX
+USB-UART GND    -> pin 3 or pin 11
+USB-UART TX     -> not connected
+USB-UART VCC    -> not connected
+```
+
 ## Useful probe point
 
 Probe the LM393 output that goes to the large digital IC on the main board.
@@ -52,10 +100,10 @@ Signal inversion: non-inverted
 For a live viewer, use a USB-UART adapter connected only as a receiver.
 
 ```text
-LM393 data output  -> USB-UART RX
-Robot/LiDAR GND   -> USB-UART GND
-USB-UART TX       -> not connected
-USB-UART VCC      -> not connected
+Pin 17 / TP20 / DATA -> USB-UART RX
+LiDAR GND            -> USB-UART GND
+USB-UART TX          -> not connected
+USB-UART VCC         -> not connected
 ```
 
 Do not power the LiDAR from the USB-UART.
